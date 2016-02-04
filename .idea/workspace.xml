@@ -2,15 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="545ab4fe-a494-48c2-a205-82869341047a" name="Default" comment="">
-      <change type="DELETED" beforePath="C:\Users\LanfeaR\Documents\GitHub\FTP-Client\.idea\description.html" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\LanfeaR\Documents\GitHub\FTP-Client\.idea\encodings.xml" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\LanfeaR\Documents\GitHub\FTP-Client\.idea\project-template.xml" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\LanfeaR\Documents\GitHub\FTP-Client\.idea\uiDesigner.xml" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/company/Ftp.java" afterPath="$PROJECT_DIR$/src/com/company/Ftp.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/compiler.xml" afterPath="$PROJECT_DIR$/.idea/compiler.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/modules.xml" afterPath="$PROJECT_DIR$/.idea/modules.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/vcs.xml" afterPath="$PROJECT_DIR$/.idea/vcs.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="FTP-Client.iws" />
@@ -486,12 +477,12 @@
       <created>1454612685910</created>
       <option name="number" value="Default" />
       <updated>1454612685910</updated>
-      <workItem from="1454612687174" duration="574000" />
+      <workItem from="1454612687174" duration="894000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="574000" />
+    <option name="totallyTimeSpent" value="894000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
