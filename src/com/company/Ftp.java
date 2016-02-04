@@ -16,7 +16,7 @@ public class Ftp extends Main implements KeyListener {
     private CountingInputStream dataIn;
     private BufferedReader passiveIn;
     private Socket socket;
-    private String username = "";
+    private String username = "anonymous";
     private String password = "";
     private int dataSocketPort;
 
@@ -28,7 +28,7 @@ public class Ftp extends Main implements KeyListener {
 
     private void connect() {
         try {
-            socket = new Socket("", 21);
+            socket = new Socket("ftp.linkura.se", 21);
             out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"));
             in = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
             if (socket.isConnected()) {
@@ -98,7 +98,7 @@ public class Ftp extends Main implements KeyListener {
 
     private void readPassiveInput() throws IOException {
         try {
-            Socket dataSocket = new Socket("", dataSocketPort);
+            Socket dataSocket = new Socket("ftp.linkura.se", dataSocketPort);
             passiveIn = new BufferedReader(new InputStreamReader(dataSocket.getInputStream()));
             String line;
             while ((line = passiveIn.readLine()) != null) {
@@ -159,7 +159,7 @@ public class Ftp extends Main implements KeyListener {
             write(command);
         }
         else if (command.startsWith("get")) {
-            Socket dataSocket = new Socket("", dataSocketPort);
+            Socket dataSocket = new Socket("ftp.linkura.se", dataSocketPort);
             dataIn = new CountingInputStream(dataSocket.getInputStream());
             write("RETR " + command.replace("get", "").trim());
         }
