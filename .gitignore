@@ -26,9 +26,11 @@ hs_err_pid*
 ._*
 
 #folders
-.idea/
+.idea/workspace.xml
+.idea/tasks.xml
 *.iml
-out/
+out/*
+src/META-INF
 
 # Files that might appear in the root of a volume
 .DocumentRevisions-V100
