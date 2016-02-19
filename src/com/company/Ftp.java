@@ -20,6 +20,7 @@ public class Ftp extends Main implements KeyListener {
     private String password = "kanske";
     private static final String addr = "localhost";
     private int dataSocketPort;
+    private static final int BUFF_SIZE = 8*1024;
 
     public Ftp() throws IOException {
         commandField.addKeyListener(this);
@@ -82,17 +83,19 @@ public class Ftp extends Main implements KeyListener {
             long startTime = System.nanoTime();
             try {
                 fout = new FileOutputStream(filename);
-                int in1;
                 int counter = 0;
-                while ((in1 = dataIn.read()) != -1) {
+                byte[] buff = new byte[BUFF_SIZE];
+                int len;
+                while ((len = dataIn.read(buff)) != -1) {
                     counter++;
                     if (counter % 100 == 0 || dataIn.getCount() == bytes) {
                         setTitle("FTP-client - " + getPercent(dataIn.getCount(), bytes) + " %" +
                                 "  (" + byteToMB((double) dataIn.getCount()) + "mb / " + byteToMB((double) bytes) + "mb)" +
-                        "  kb/s: " + getDownloadRate(startTime, dataIn.getCount()));
+                                "  kb/s: " + getDownloadRate(startTime, dataIn.getCount()));
                     }
-                    fout.write(in1);
+                    fout.write(buff, 0, len);
                 }
+                fout.flush();
                 setTitle("FTP-client");
                 mainTextArea.append("\n");
                 fout.close();
@@ -106,13 +109,10 @@ public class Ftp extends Main implements KeyListener {
         Socket dataSocket = null;
         try {
             dataSocket = new Socket(addr, dataSocketPort);
-            System.out.println("connected");
             passiveIn = new BufferedReader(new InputStreamReader(dataSocket.getInputStream()));
-            System.out.println("stream open");
             write("LIST");
             String line;
             while ((line = passiveIn.readLine()) != null) {
-                System.out.println(line);
                 handleInput(line);
             }
             passiveIn.close();
@@ -120,7 +120,6 @@ public class Ftp extends Main implements KeyListener {
             e.printStackTrace();
         }
         finally {
-            System.out.println("all closed");
             passiveIn.close();
             dataSocket.close();
         }
@@ -169,7 +168,6 @@ public class Ftp extends Main implements KeyListener {
     private void handleOutput(String command) throws IOException {
         if (command.startsWith("ls")) {
             readPassiveInput();
-            System.out.println("Writing list");
         }
         else if (command.startsWith("PASV")) {
             write(command);
