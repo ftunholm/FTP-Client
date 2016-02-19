@@ -18,6 +18,7 @@ public class Ftp extends Main implements KeyListener {
     private Socket socket;
     private String username = "kalle";
     private String password = "kanske";
+    private static final String addr = "localhost";
     private int dataSocketPort;
 
     public Ftp() throws IOException {
@@ -28,7 +29,7 @@ public class Ftp extends Main implements KeyListener {
 
     private void connect() {
         try {
-            socket = new Socket("localhost", 21);
+            socket = new Socket(addr, 21);
             out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"));
             in = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
             if (socket.isConnected()) {
@@ -44,10 +45,18 @@ public class Ftp extends Main implements KeyListener {
         @Override
         public void run() {
             String line;
-            while (true) {
-                try {
-                    line = in.readLine();
+            try {
+                while ((line = in.readLine()) != null) {
                     handleInput(line);
+                }
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+            finally {
+                try {
+                    in.close();
+                    socket.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -96,7 +105,7 @@ public class Ftp extends Main implements KeyListener {
     private void readPassiveInput() throws IOException {
         Socket dataSocket = null;
         try {
-            dataSocket = new Socket("localhost", dataSocketPort);
+            dataSocket = new Socket(addr, dataSocketPort);
             System.out.println("connected");
             passiveIn = new BufferedReader(new InputStreamReader(dataSocket.getInputStream()));
             System.out.println("stream open");
@@ -166,15 +175,15 @@ public class Ftp extends Main implements KeyListener {
             write(command);
         }
         else if (command.startsWith("get")) {
-            Socket dataSocket = new Socket("localhost", dataSocketPort);
+            Socket dataSocket = new Socket(addr, dataSocketPort);
             dataIn = new CountingInputStream(dataSocket.getInputStream());
             write("RETR " + command.replace("get", "").trim());
         }
+        else if (command.equals("cd ..")) {
+            write("CDUP");
+        }
         else if (command.startsWith("cd")) {
             write("CWD " + command.replace("cd", "").trim());
-        }
-        else if (command.startsWith("cd ..")) {
-            write("CDUP");
         }
         else {
             write(command);
