@@ -16,8 +16,8 @@ public class Ftp extends Main implements KeyListener {
     private CountingInputStream dataIn;
     private BufferedReader passiveIn;
     private Socket socket;
-    private String username = "anonymous";
-    private String password = "";
+    private String username = "kalle";
+    private String password = "kanske";
     private int dataSocketPort;
 
     public Ftp() throws IOException {
@@ -28,7 +28,7 @@ public class Ftp extends Main implements KeyListener {
 
     private void connect() {
         try {
-            socket = new Socket("ftp.linkura.se", 21);
+            socket = new Socket("localhost", 21);
             out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"));
             in = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
             if (socket.isConnected()) {
@@ -68,45 +68,52 @@ public class Ftp extends Main implements KeyListener {
     }
 
     private void createDataThread(final String filename, final int bytes) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                OutputStream fout;
-                long startTime = System.nanoTime();
-                try {
-                    fout = new FileOutputStream(filename);
-                    int in;
-                    int counter = 0;
-                    while ((in = dataIn.read()) != -1) {
-                        counter++;
-                        if (counter % 100 == 0 || dataIn.getCount() == bytes) {
-                            setTitle("FTP-client - " + getPercent(dataIn.getCount(), bytes) + " %" +
-                                    "  (" + byteToMB((double) dataIn.getCount()) + "mb / " + byteToMB((double) bytes) + "mb)" +
-                            "  kb/s: " + getDownloadRate(startTime, dataIn.getCount()));
-                        }
-                        fout.write(in);
+        new Thread(() -> {
+            OutputStream fout;
+            long startTime = System.nanoTime();
+            try {
+                fout = new FileOutputStream(filename);
+                int in1;
+                int counter = 0;
+                while ((in1 = dataIn.read()) != -1) {
+                    counter++;
+                    if (counter % 100 == 0 || dataIn.getCount() == bytes) {
+                        setTitle("FTP-client - " + getPercent(dataIn.getCount(), bytes) + " %" +
+                                "  (" + byteToMB((double) dataIn.getCount()) + "mb / " + byteToMB((double) bytes) + "mb)" +
+                        "  kb/s: " + getDownloadRate(startTime, dataIn.getCount()));
                     }
-                    setTitle("FTP-client");
-                    mainTextArea.append("\n");
-                    fout.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                    fout.write(in1);
                 }
+                setTitle("FTP-client");
+                mainTextArea.append("\n");
+                fout.close();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }).start();
     }
 
     private void readPassiveInput() throws IOException {
+        Socket dataSocket = null;
         try {
-            Socket dataSocket = new Socket("ftp.linkura.se", dataSocketPort);
+            dataSocket = new Socket("localhost", dataSocketPort);
+            System.out.println("connected");
             passiveIn = new BufferedReader(new InputStreamReader(dataSocket.getInputStream()));
+            System.out.println("stream open");
+            write("LIST");
             String line;
             while ((line = passiveIn.readLine()) != null) {
+                System.out.println(line);
                 handleInput(line);
             }
             passiveIn.close();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+        finally {
+            System.out.println("all closed");
+            passiveIn.close();
+            dataSocket.close();
         }
     }
 
@@ -152,14 +159,14 @@ public class Ftp extends Main implements KeyListener {
 
     private void handleOutput(String command) throws IOException {
         if (command.startsWith("ls")) {
-            write("LIST");
             readPassiveInput();
+            System.out.println("Writing list");
         }
         else if (command.startsWith("PASV")) {
             write(command);
         }
         else if (command.startsWith("get")) {
-            Socket dataSocket = new Socket("ftp.linkura.se", dataSocketPort);
+            Socket dataSocket = new Socket("localhost", dataSocketPort);
             dataIn = new CountingInputStream(dataSocket.getInputStream());
             write("RETR " + command.replace("get", "").trim());
         }

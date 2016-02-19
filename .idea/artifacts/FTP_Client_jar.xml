@@ -1,9 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" name="FTP-Client:jar">
-    <output-path>$PROJECT_DIR$/out/artifacts/FTP_Client_jar</output-path>
-    <root id="archive" name="FTP-Client.jar">
-      <element id="module-output" name="FTP-Client" />
-      <element id="extracted-dir" path="$USER_HOME$/Downloads/com.google.guava_1.6.0.jar" path-in-jar="/" />
-    </root>
-  </artifact>
-</component>
